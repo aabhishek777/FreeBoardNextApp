@@ -14,8 +14,6 @@ const page = () => {
             <UserProfile />
           </div>
       </div>
-
-      hi
     </>
   );
 };

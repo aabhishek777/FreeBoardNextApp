@@ -11,25 +11,33 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import {UserPlus} from "lucide-react";
+import {Plus} from "lucide-react";
 import JoinedOrganizationList from "./org-list";
 
 import {CreateOrganization} from "@clerk/nextjs";
+import {Hint} from "@/components/hint";
 
 const NewButton = () => {
   return (
     <>
-      <div style={{fontSize:'10px',backgroundColor:'red !important'}} className="uppercase">
+     
+      <div  className="uppercase">
         <JoinedOrganizationList />
       </div>
       <Dialog>
         <DialogTrigger asChild>
-         
-          <button
-            className="h-10 w-10 rounded flex items-center justify-center bg-black opacity-60 hover:opacity-100"
+          <Hint label="Add Orgnazation"
+            side="right"
+            align="center"
+            sideOffset={5}
           >
-            <UserPlus color="white"   /> 
+          <button
+            className="h-10 w-10 rounded flex items-center justify-center border opacity-60 hover:opacity-100"
+          >
+            <Plus className="w-10 h-10" color="white"  />
+          
           </button>
+         </Hint>
         </DialogTrigger>
         <DialogContent className="p-0 border-none sm:max-w-[425px]">
           <CreateOrganization />
