@@ -20,12 +20,14 @@ import {Hint} from "@/components/hint";
 const NewButton = () => {
   return (
     <>
+      
+      
      
       <div  className="uppercase">
         <JoinedOrganizationList />
       </div>
       <Dialog>
-        <DialogTrigger asChild>
+        <DialogTrigger >   
           <Hint label="Add Orgnazation"
             side="right"
             align="center"
@@ -43,6 +45,8 @@ const NewButton = () => {
           <CreateOrganization />
         </DialogContent>
       </Dialog>
+
+
     </>
   );
 };

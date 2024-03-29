@@ -1,23 +1,25 @@
-import {UserButton} from "@clerk/nextjs";
+"use client";
 
+import Navbar from "./_components/navbar/navbar";
+import Image from "next/image";
+import EmptyDashboard from "./_components/empty-dashboard";
+import {useOrganization} from "@clerk/nextjs";
 const page = () => {
+  const {organization} = useOrganization();
   return (
     <>
-      
+      <Navbar />
 
-      <div className=" p-3 mt-3 flex sm:justify-evenly  justify-end">
-        <div className=" sm:h-10 sm:flex  sm:w-[80%] ">
-          <input style={{border:"2px solid black"}} className="w-full p-3 rounded h-full" type="text" />
-        </div>
-  
-          <div className="">
-            <UserProfile />
-          </div>
+      <div className="h-[calc(100%-80px)] rounded  p-6 flex-1 ">
+        {
+          !organization? <EmptyDashboard />:
+            
+            <div>hi
+            </div>
+        }
       </div>
     </>
   );
 };
 
 export default page;
-
-const UserProfile = () => <UserButton />;

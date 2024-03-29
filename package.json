@@ -21,12 +21,14 @@
     "dialog": "^0.3.1",
     "lucide-react": "^0.323.0",
     "next": "14.1.0",
+    "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",
     "shadcn-ui": "^0.8.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "tooltip": "^1.6.1"
+    "tooltip": "^1.6.1",
+    "usehooks-ts": "^3.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",

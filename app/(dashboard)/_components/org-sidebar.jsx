@@ -57,8 +57,8 @@ const OrgSidebar = () => {
               justifyContent: "center",
             },
             organizationSwitcherTrigger: {
-              padding: "6px",
-              border: "2px solid #E5E7EB",
+              padding: "4px",
+              border: "1px solid #E5E7EB",
               borderRadius: "8px",
             },
           },
