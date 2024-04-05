@@ -25,16 +25,15 @@ const OrgSidebar = () => {
   return (
     <div className="">
       <Link href="/">
-        <div className="flex  items-center justify-between ">
+        <div className="flex items-center ">
           <Image
-            style={{marginRight: ".5rem"}}
+            style={{marginRight: ""}}
             alt="logo.svg"
             src="/logo.png"
-            width={30}
-            height={30}
-            className="m-5"
+            width={35}
+            height={35}
+            className="m-3"
           />
-
           <span
             style={{
               fontSize: "1.5rem",
@@ -46,6 +45,7 @@ const OrgSidebar = () => {
         </div>
       </Link>
 
+            
       <br />
       <OrganizationSwitcher
         hidePersonal
@@ -53,13 +53,13 @@ const OrgSidebar = () => {
           elements: {
             rootBox: {
               display: "flex",
-
+               width:'full',
               justifyContent: "center",
             },
             organizationSwitcherTrigger: {
-              padding: "4px",
-              border: "1px solid #E5E7EB",
-              borderRadius: "8px",
+              padding: "6px",
+              border: "1.5px solid #E5E7EB",
+              borderRadius: "9px",
             },
           },
         }}

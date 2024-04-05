@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
   const [debouncedValue] = useDebounceValue(value, 500); // Debouncing value
   
   useEffect(() => {
-    // Construct the URL with debounced value
+  
     const url = qs.stringifyUrl(
       {
         url: "/",
@@ -22,20 +22,20 @@ import { Input } from "@/components/ui/input";
       { skipEmptyString: true, skipNull: true }
     );
 
-    if (debouncedValue) { // Only push if there's a value to search for
+    if (debouncedValue) { 
       router.push(url);
     }
   }, [debouncedValue, router]);
 
   return (
-    <div className="w-full relative">
+    <div className="w-full rounded relative">
       <Search className="absolute top-1/2 left-3 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
       <Input
-        className="w-full max-w-[516px] pl-9"
+        className=" w-full pl-9"
         placeholder="Search boards"
         onChange={(event) => setValue(event.target.value)}
         type="text"
-        value={value} // Use controlled component pattern
+        value={value} 
       />
     </div>
   );

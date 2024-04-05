@@ -5,21 +5,29 @@ import {Plus} from "lucide-react";
 import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
 import {Hint} from "@/components/hint";
 
-const InviteButton = () => {
+const InviteButton=() => {
+  
+  console.log("invite button");
+  
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger >
         <Hint label="Invite Members" side="left" align="center" sideOffset={5}>
           <Button variant="outline">
             <Plus />
             Invite
+          
           </Button>
         </Hint>
       </DialogTrigger>
       <DialogContent className="p-0 border-none w-full ">
+
+
         <OrganizationProfile />
       </DialogContent>
     </Dialog>
+
+   
   );
 };
 
