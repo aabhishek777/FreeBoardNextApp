@@ -1,7 +1,7 @@
 import React from 'react'
 import EmptySearch from './empty-search';
 import EmptyFavorite from './empty-favorite';
-import EmptyDashboard from './empty-dashboard';
+import EmptyBoard from './empty-board';
 
 
 
@@ -24,7 +24,7 @@ const BoardList=({query,orgId}: BoardListProps) => {
     
 	if(!data?.length &&query?.search) return <EmptySearch/>
 	if(!data?.length && query?.favorite) return <EmptyFavorite/>
-	if(!data?.length) return <EmptyDashboard/>
+	if(!data?.length) return <EmptyBoard/>
 
 }
 
