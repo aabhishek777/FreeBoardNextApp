@@ -23,13 +23,8 @@ export const create=mutation({
 	},
 	handler: async (ctx,args) => {
 		const identity= await ctx.auth.getUserIdentity();
-
-
 		console.log(identity);
-		
 		if(!identity) throw new Error("you are not authrized")
-
-
 		const randomImage=images[Math.floor(Math.random()*images.length)];
 
 		const board=await ctx.db.insert("boards",{
@@ -43,3 +38,24 @@ export const create=mutation({
 
 	},
 })
+
+export const deleteCard = mutation({
+    args: {
+		id: v.id("boards") 
+		
+    },
+    handler: async (ctx, args) => {
+        try {
+            const identity = await ctx.auth.getUserIdentity();
+			if (!identity) throw new Error('Not authorized!'); 
+			console.log(args.id)
+            
+			const a=await ctx.db.delete(args.id);
+			console.log(a);
+			return a;
+			
+        } catch (error) {
+            console.log(error);
+        }
+    }
+});
