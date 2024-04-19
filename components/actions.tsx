@@ -52,7 +52,11 @@ const Actions = ({children, side, sideOffset, id, title}: ActionsProps) => {
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      
+      <DropdownMenuTrigger asChild>
+        {children}
+
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent
         side={side}

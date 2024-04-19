@@ -6,13 +6,17 @@ import {Plus} from "lucide-react";
 import {useOrganization} from "@clerk/nextjs";
 import {api} from "@/convex/_generated/api";
 import {useApiMutation} from "@/hooks/use-api-mutation";
-import {Toaster, toast} from "sonner";
+import { toast} from "sonner";
+import {useRouter} from "next/navigation";
 
-const EmptyBoard = () => {
+const EmptyBoard=() => {
+  const router=useRouter();
   const {organization} = useOrganization();
+  const {mutate, pending} = useApiMutation(api.boards.create);
+ 
   console.log(organization?.id);
 
-  const {mutate, pending} = useApiMutation(api.boards.create);
+  
   const addButtonClick = async () => {
     if (!organization) return;
 
@@ -23,12 +27,15 @@ const EmptyBoard = () => {
       });
 
       toast("Created Successfully!");
+      router.push(`/card/${organization?.id}`)
     } catch (error) {
       toast(`error ${error}`);
       console.log(error);
     }
-    console.log(mutate);
+   
   };
+
+  
   return (
     <div className=" flex h-full justify-center items-center flex-col">
       <Image

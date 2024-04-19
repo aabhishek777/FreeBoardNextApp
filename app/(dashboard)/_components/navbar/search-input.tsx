@@ -2,15 +2,15 @@
 
 import qs from "query-string";
 import { Search } from "lucide-react";
-import { useDebounceValue } from "usehooks-ts"; // Note: Adjusted for a more common debounce hook usage
-import { useRouter } from "next/navigation"; // Corrected import path
+import { useDebounceValue } from "usehooks-ts"; 
+import { useRouter } from "next/navigation"; 
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
  const SearchInput = () => {
   const router = useRouter();
   const [value, setValue] = useState("");
-  const [debouncedValue] = useDebounceValue(value, 500); // Debouncing value
+  const [debouncedValue] = useDebounceValue(value, 500); 
   
   useEffect(() => {
   

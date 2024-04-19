@@ -6,18 +6,20 @@ import EmptyDashboard from "./_components/empty-dashboard";
 import {useOrganization} from "@clerk/nextjs";
 import BoardList from "./_components/bord-list";
 import {useParams} from "next/navigation";
+import {Search} from "lucide-react";
 
 
 interface DashbordPageProps{
 
   searchParams:{
-  
     search?: string,
     favorite?:string
   }
 }
 const page = ({searchParams}:DashbordPageProps) => {
   const {organization}=useOrganization();
+  console.log(searchParams.search);
+  
   return (
     <>
       <Navbar />

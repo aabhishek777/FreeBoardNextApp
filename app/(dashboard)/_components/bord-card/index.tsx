@@ -34,11 +34,14 @@ export const BoardCard = ({
   imageUrl,
   authorId,
   createdAt,
+
 }: BoardCardProps) => {
   const createdAtLable = formatDistanceToNow(createdAt, {
     addSuffix: true,
   });
 
+
+ 
   return (
     <Link href={`/card/${id}`}>
       <div className=" group aspect-[100/127] flex flex-col border rounded-lg overflow-hidden justify-between">
@@ -59,6 +62,8 @@ export const BoardCard = ({
           authorId={authorId}
           createdAtLable={createdAtLable}
           disabled={disabled}
+          orgId={orgId}
+      
         />
       </div>
     </Link>
