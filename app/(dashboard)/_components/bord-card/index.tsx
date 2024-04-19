@@ -1,8 +1,9 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, {useState} from "react";
+
 import Overlay from "./overlay";
 import Footer from "./footer";
 
@@ -38,15 +39,14 @@ export const BoardCard = ({
     addSuffix: true,
   });
 
-  const [direct,setDirect]=useState(true)
   return (
-    <Link href={direct?`/card/${id}`:`/`}>
+    <Link href={`/card/${id}`}>
       <div className=" group aspect-[100/127] flex flex-col border rounded-lg overflow-hidden justify-between">
         <div className="bg-amber-100 flex-1 relative">
           <Image src={imageUrl} alt={title} fill className="object-fit" />
           <Overlay />
-          <Actions  side="right" id={id} title={title}>
-            <button  className="absolute  outline-none  top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity ">
+          <Actions side="right" id={id} title={title}>
+            <button className="absolute  outline-none  top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity ">
               <MoreHorizontal className="text-white  opacity-75 hover:opacity-100 transition-opacity" />
             </button>
           </Actions>

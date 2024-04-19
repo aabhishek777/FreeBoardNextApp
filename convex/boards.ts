@@ -1,6 +1,7 @@
 
 import {v} from 'convex/values';
 import {mutation} from './_generated/server'
+import {title} from 'process';
 
 const images=[
 	'/placeholders/1.svg',
@@ -59,3 +60,25 @@ export const deleteCard = mutation({
         }
     }
 });
+
+
+
+export const updateCard=mutation({
+	args: {
+		id:v.id('boards'),
+		title:v.string()
+	},
+	handler:async (ctx,args) => {
+		try {
+			const identity=await ctx.auth.getUserIdentity();
+
+			const title=args.title.trim();
+			if (!identity) throw new Error("not authorized!");
+			if (!title) throw new Error("empty Title");
+			if (title.length>60) throw new Error("length is too large");
+			return ctx.db.patch(args.id,{title:args.title});
+		} catch (error) {
+			throw new Error(`${error}`)
+		}
+	}
+})

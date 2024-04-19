@@ -7,12 +7,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
-import {Link2, Trash2} from "lucide-react";
+import {Link2, Pencil, Trash2} from "lucide-react";
 import {toast} from "sonner";
 import {useApiMutation} from "@/hooks/use-api-mutation";
 import {api} from "@/convex/_generated/api";
 import {Button} from "./ui/button";
 import ConfirmDialoge from "./confirm-model";
+import {useRenameModel} from "@/store/rename-model";
 
 interface ActionsProps {
   children: React.ReactNode;
@@ -23,7 +24,8 @@ interface ActionsProps {
 }
 
 const Actions = ({children, side, sideOffset, id, title}: ActionsProps) => {
-  const {mutate, pending} = useApiMutation(api.boards.deleteCard);
+  const {mutate,pending}=useApiMutation(api.boards.deleteCard);
+  const {onOpen}=useRenameModel();
   const onCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(
@@ -46,6 +48,8 @@ const Actions = ({children, side, sideOffset, id, title}: ActionsProps) => {
       toast("not deleted ");
     }
   };
+
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -77,10 +81,10 @@ const Actions = ({children, side, sideOffset, id, title}: ActionsProps) => {
           </Button>
         </ConfirmDialoge>
 
-        {/* <DropdownMenuItem onClick={onDelete} className=" ">
-          <Trash2 className="mr-2 " />
-          Delete
-        </DropdownMenuItem> */}
+        <DropdownMenuItem onClick={()=>onOpen(id,title)} className=" ">
+          <Pencil className="mr-2 " />
+          Rename
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
