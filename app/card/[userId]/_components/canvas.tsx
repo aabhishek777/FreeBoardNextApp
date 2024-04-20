@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import Participents from "./participants";
-import Info from "./info";
-import Toolbar from "./toolbar";
+import {Participents} from "./participants";
+import {Info} from "./info";
+import {Toolbar} from "./toolbar";
 
 interface CanvasProps {
   boardId: string;

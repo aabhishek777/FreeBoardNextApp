@@ -8,12 +8,15 @@ import React, {ReactNode} from "react";
 interface LiveblocksRoomProps {
   children: ReactNode;
   roomId: string;
+  fallback: NonNullable<React.ReactNode> | null;
 }
 
-const LiveblocksRoom = ({children, roomId}: LiveblocksRoomProps) => {
+const LiveblocksRoom = ({children, roomId, fallback}: LiveblocksRoomProps) => {
   return (
     <RoomProvider id={roomId} initialPresence={{}}>
-      <ClientSideSuspense fallback={<div>Loading/....</div>}>{() => children}</ClientSideSuspense>
+      <ClientSideSuspense fallback={fallback}>
+        {() => children}
+      </ClientSideSuspense>
     </RoomProvider>
   );
 };

@@ -1,5 +1,5 @@
 import {v} from "convex/values";
-import {mutation} from "./_generated/server";
+import {mutation, query} from "./_generated/server";
 
 const images = [
   "/placeholders/1.svg",
@@ -45,18 +45,16 @@ export const deleteCard = mutation({
       const identity = await ctx.auth.getUserIdentity();
       if (!identity) throw new Error("Not authorized!");
 
-      const existingFavorite =await ctx.db
+      const existingFavorite = await ctx.db
         .query("userFavorites")
         .withIndex("by_user_board", (q) =>
-			    q
-				.eq("userId",identity.subject)
-				.eq("boardsId",args.id)
+          q.eq("userId", identity.subject).eq("boardsId", args.id)
         )
         .unique();
 
-		if (existingFavorite) {
-			await ctx.db.delete(existingFavorite._id);
-		}
+      if (existingFavorite) {
+        await ctx.db.delete(existingFavorite._id);
+      }
       return await ctx.db.delete(args.id);
     } catch (error) {
       console.log(error);
@@ -138,5 +136,14 @@ export const unFavorite = mutation({
     if (!existingFavorite) throw new Error("not exist");
 
     return await ctx.db.delete(existingFavorite._id);
+  },
+});
+
+export const get = query({
+  args: {
+    id: v.id("boards"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
   },
 });
