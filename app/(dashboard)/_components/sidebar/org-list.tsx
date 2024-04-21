@@ -5,7 +5,7 @@ import {Item} from "./item";
 import {Hint} from "@/components/hint";
 
 const JoinedOrganizationList = () => {
-  const {isLoaded, setActive, userMemberships} = useOrganizationList({
+  const {isLoaded, userMemberships} = useOrganizationList({
     userMemberships: {
       infinite: true,
     },
