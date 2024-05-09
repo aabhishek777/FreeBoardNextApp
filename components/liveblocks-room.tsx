@@ -13,7 +13,7 @@ interface LiveblocksRoomProps {
 
 const LiveblocksRoom = ({children, roomId, fallback}: LiveblocksRoomProps) => {
   return (
-    <RoomProvider id={roomId} initialPresence={{}}>
+    <RoomProvider id={roomId} initialPresence={{cursor: null}}>
       <ClientSideSuspense fallback={fallback}>
         {() => children}
       </ClientSideSuspense>

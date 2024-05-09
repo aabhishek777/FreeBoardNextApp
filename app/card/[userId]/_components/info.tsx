@@ -31,7 +31,7 @@ export const Info = async ({boardId}: InfoProps) => {
   const id = boardId as Id<"boards">;
   const data = useQuery(api.boards.get, {id});
 
-  console.log(data);
+  // console.log(data);
 
   const {onOpen} = useRenameModel();
 

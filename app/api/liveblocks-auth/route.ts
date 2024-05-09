@@ -27,11 +27,7 @@ export async function POST(request: Request) {
 	const {room}=await request.json();
 	const board=await convex.query(api.boards.get,{id: room});
 	
-	// console.log('----------------------------------------------------')
-	// console.log(board?._id)
-	// console.log('----------------------------------------------------')
-	// console.log(room)
-	// console.log('----------------------------------------------------')
+
 
 	if (board?._id!==room) {
 		return new Response('Unauthorized',{status: 408});
@@ -51,7 +47,7 @@ export async function POST(request: Request) {
 	};
 
 	const {status,body}=await session.authorize();
-	// console.log(body)
+	
 	return new Response(body,{status})
 
 	
