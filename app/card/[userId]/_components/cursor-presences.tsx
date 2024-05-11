@@ -1,19 +1,35 @@
 "use cleint";
 
-import {useOthersConnectionIds} from "@/liveblocks.config";
+import {useOther, useOthersConnectionIds} from "@/liveblocks.config";
 import {memo} from "react";
 import {Cursor} from "./cursor";
-import {MousePointer2} from "lucide-react";
 
-export const Cursors = () => {
-  const ids = useOthersConnectionIds();
- console.log(ids);
- 
+export const Cursors=() => {
+  const ids=useOthersConnectionIds();
+  let info,cursor;
+  ids.map((connectionId) => {
+    info=useOther(connectionId,(user) => user?.info);
+    cursor=useOther(connectionId,(user) => user?.presence?.cursor);
+  });
+  
+  console.log(cursor);
+  console.log(info);
+  
+
+  const name = info?.name || "Teammate";
+
+  if (!cursor) {
+    return null;
+  }
+
+  const {x, y} = cursor;
+
   return (
-    <g>
-
+    <g
+    
+    transform={`translate(${x}, ${y})`}
+    >
       {ids.map((connectionId) => (
-        
 		  <Cursor
 			  key={connectionId}
 			  connectionId={connectionId}
@@ -23,20 +39,10 @@ export const Cursors = () => {
   );
 };
 
-export const CursorPresences=memo(() => {
-  const ids = useOthersConnectionIds();
+export const CursorPresences = memo(() => {
   return (
-    <Cursors />
-     
-    // <g>
-    //   {ids.map((connectionId) => (
-    //       <foreignObject x={10} y={10} width="50" height="50">
-    //       <div xmlns="http://www.w3.org/1999/xhtml" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background:"red" }}>
-    //         <MousePointer2 className="h-5 w-5" />
-    //       </div>
-    //     </foreignObject>
-		 
-    //   ))}
-    // </g>
+   
+      <Cursors />
+  
   );
 });
