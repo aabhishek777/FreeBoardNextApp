@@ -11,16 +11,20 @@ interface CursorProps {
 
 export const Cursor = memo(({connectionId}: CursorProps) => {
   const info = useOther(connectionId, (user) => user?.info);
-  const cursor = useOther(connectionId, (user) => user?.presence?.cursor);
+  const cursor=useOther(connectionId,(user) => user?.presence?.cursor);
+  
 
+
+  const name=info?.name||"Teammate";
   const x = cursor?.x,
     y = cursor?.y;
 
   return (
     <g transform={`translate(${x}, ${y})`}>
-      <foreignObject width="50" height="50">
+      <foreignObject width="110" height="100">
         <div
-          xmlns="http://www.w3.org/1999/xhtml"
+          className="relative"
+          
           style={{
             width: "100%",
             height: "100%",
@@ -36,6 +40,9 @@ export const Cursor = memo(({connectionId}: CursorProps) => {
               fill: idToColor(connectionId),
             }}
           />
+          <div className="absolute mt-12 ml-10 px-1.5 text-white rounded-sm text-sm"
+          style={{backgroundColor:idToColor(connectionId)}}
+          >{name}</div>
         </div>
       </foreignObject>
     </g>
