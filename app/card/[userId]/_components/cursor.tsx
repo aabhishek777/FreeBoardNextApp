@@ -10,22 +10,34 @@ interface CursorProps {
 }
 
 export const Cursor = memo(({connectionId}: CursorProps) => {
- 
+  const info = useOther(connectionId, (user) => user?.info);
+  const cursor = useOther(connectionId, (user) => user?.presence?.cursor);
+
+  const x = cursor?.x,
+    y = cursor?.y;
+
   return (
-    <foreignObject width="50" height="50">
-      <div
-        xmlns="http://www.w3.org/1999/xhtml"
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "red",
-        }}
-      >
-        <MousePointer2 className="h-5 w-5" />
-      </div>
-    </foreignObject>
+    <g transform={`translate(${x}, ${y})`}>
+      <foreignObject width="50" height="50">
+        <div
+          xmlns="http://www.w3.org/1999/xhtml"
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <MousePointer2
+            className="h-5 w-5 "
+            style={{
+              color: idToColor(connectionId),
+              fill: idToColor(connectionId),
+            }}
+          />
+        </div>
+      </foreignObject>
+    </g>
   );
 });
