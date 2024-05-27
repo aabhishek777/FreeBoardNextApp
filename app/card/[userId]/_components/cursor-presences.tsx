@@ -1,45 +1,40 @@
 
 
-// import {useOther, useOthersConnectionIds} from "@/liveblocks.config";
-// import {memo} from "react";
-// import {Cursor} from "./cursor";
 
-// export const Cursors=() => {
-//   const ids=useOthersConnectionIds();
-//   let info,cursor;
-//   // ids.map((connectionId) => {
-//   //   info=useOther(connectionId,(user) => user?.info);
-//   //   cursor=useOther(connectionId,(user) => user?.presence?.cursor);
-//   // });
-  
-//   console.log(cursor);
-//   console.log(info);
-  
 
-//   const name = info || "Teammate";
+"use client"
 
-//   if (!cursor) {
-//     return null;
-//   }
+import {useOthersConnectionIds} from "@/liveblocks.config"
+import {memo} from "react"
+import {Cursor2} from "./cursor-2";
 
-//   const {x, y} = cursor;
 
-//   return (
-//     <>
-//       {ids.map((connectionId) => (
-// 		  <Cursor
-// 			  key={connectionId}
-// 			  connectionId={connectionId}
-// 		  />
-//       ))}
-//     </>
-//   );
-// };
 
-// export const CursorPresences = memo(() => {
-//   return (
-   
-//       <Cursors />
-  
-//   );
-// });
+
+const Cursors=() => {
+	const ids=useOthersConnectionIds();
+
+	return (<>
+		{ids.map((connectionId) => (
+			
+			<Cursor2
+			
+				key={connectionId}
+				connectionId={connectionId}
+			/>
+
+		))}
+		</>
+	)
+}
+export const CursorPresences=memo(() => {
+	return (
+		<>
+		<Cursors/>
+	</>
+	)
+	
+})
+
+
+CursorPresences.displayName="CursorPresences";

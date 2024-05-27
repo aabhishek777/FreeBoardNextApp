@@ -26,6 +26,8 @@ import {pointerEventToCanvasPoint} from "@/lib/utils";
 import {Cursor} from "./cursor";
 import {nanoid} from "nanoid";
 import {LiveMap, LiveObject} from "@liveblocks/client";
+import {CursorPresences} from "./cursor-presences";
+import {LayerPreview} from "./layer-preview";
 
 interface CanvasProps {
   boardId: string;
@@ -50,9 +52,9 @@ const Canvas = ({boardId}: CanvasProps) => {
   const canUndo = useCanUndo();
   const ids = useOthersConnectionIds();
 
-  console.log(layerIds);
+  console.log(history);
 
-  const onPointerMoveData = useMutation(
+  const onPOinterMove = useMutation(
     ({setMyPresence}, e: React.PointerEvent) => {
       e.preventDefault();
       const currentPresence = pointerEventToCanvasPoint(e, camera);
@@ -63,14 +65,14 @@ const Canvas = ({boardId}: CanvasProps) => {
     []
   );
 
-  const onWheelData = useCallback((e: React.WheelEvent) => {
+  const onWheel = useCallback((e: React.WheelEvent) => {
     setCamera((camera) => ({
       x: camera.x - e.deltaX,
       y: camera.y - e.deltaY,
     }));
   }, []);
 
-  const onPointerLeaveData = useMutation(({setMyPresence}) => {
+  const onPointerLeave = useMutation(({setMyPresence}) => {
     setMyPresence({cursor: null});
     //TODO have to handel the cursor left because it goes to x,y=0 starting of this canvas //
   }, []);
@@ -91,9 +93,7 @@ const Canvas = ({boardId}: CanvasProps) => {
       }
 
       const livelayerIds = storage.get("layerIds");
-
       const layerId = nanoid();
-
       const layer = new LiveObject({
         type: layerType,
         x: position.x,
@@ -115,6 +115,40 @@ const Canvas = ({boardId}: CanvasProps) => {
     []
   );
 
+
+  const onPointerUp=useMutation(({ },e) => {
+    
+    const point=pointerEventToCanvasPoint(e,camera);
+
+    console.log({
+      point,
+      LayerTypes,
+      mode: canvasState.mode
+    });
+    
+    if (canvasState.mode==CanvasMode.Inserting) {
+      inserLayer(canvasState.layerType,point);
+    }
+    else {
+      setCanvasState({
+        mode: CanvasMode.None,
+      });
+    }
+
+    history.resume();
+
+  },[
+    camera,
+    inserLayer,
+    canvasState,
+    history
+  ]);
+
+
+  console.log(camera.x);
+  
+
+
   return (
     <main className="w-full h-full relative bg-neutral-200 touch-none">
       <Info boardId={boardId} />
@@ -122,21 +156,41 @@ const Canvas = ({boardId}: CanvasProps) => {
       <Toolbar
         canvasState={canvasState}
         setCanvasState={setCanvasState}
-        redo={history.canRedo}
-        undo={history.canUndo}
+        redo={history.redo}
+        undo={history.undo}
         canRedo={canRedo}
         canUndo={canUndo}
       />
 
       <svg
         className="h-[100vh] w-[100vw]"
-        onWheel={onWheelData}
-        onPointerMove={onPointerMoveData}
-        onPointerLeave={onPointerLeaveData}
+        onWheel={onWheel}
+        onPointerMove={onPOinterMove}
+        onPointerLeave={onPointerLeave}
+        onPointerUp={onPointerUp}
       >
-        {ids.map((connectionId) => (
-          <Cursor key={connectionId} connectionId={connectionId} />
-        ))}
+
+        <g
+          style={{
+            transform:`translate(${camera.x}px,${camera.y})`
+         }}
+        >
+
+          {layerIds.map((layerId) => (
+            <LayerPreview
+            
+              key={layerId}
+              id={layerId}
+              onLayerPointerDown={() => { }}
+              selectionColor={null}
+            
+            />
+          ))}
+          <CursorPresences/>
+        
+    
+
+        </g>
       </svg>
     </main>
   );
