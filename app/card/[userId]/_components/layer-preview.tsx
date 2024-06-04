@@ -2,8 +2,8 @@
 
 import {useStorage} from "@/liveblocks.config";
 import {LayerTypes} from "@/type/canvas";
-import {root} from "postcss";
 import React, {memo} from "react";
+import {Rectangle} from "./rectangle";
 
 interface LayerPreviewProps {
   id: string;
@@ -21,7 +21,17 @@ export const LayerPreview = memo(
 
     switch (layer.type) {
       case LayerTypes.Rectangle:
-        return <div>Rectangle</div>;
+        return (
+          <Rectangle
+          
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+            
+          
+          />
+        );
 
       default: {
         console.warn("not layyers present");
