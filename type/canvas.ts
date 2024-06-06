@@ -73,7 +73,7 @@ export type XYWH = {
   x: number;
   y: number;
   width: number;
-  Height: number;
+  height: number;
 };
 
 export enum Side {

@@ -16,9 +16,6 @@ export const Rectangle = ({
 }: RectangleProps) => {
   const {x, y, height, width, fill} = layer;
 	
-	
-	console.log(rgbToHexColor(fill));
-	
   return (
     <rect
       className=" drop-shadow-md"

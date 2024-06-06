@@ -134,6 +134,6 @@ export const Toolbar = ({
 
 Toolbar.Skeleton = () => {
   return (
-    <div className="absolute top-[50%] -translate-y-[50%] left-2 h-[256px] flex flex-col  px-1.5 gap-y-2 w-[56px] rounded-sm  bg-white  " />
+    <div className="absolute top-[50%] -translate-y-[50%] left-2 h-[256px] flex flex-col  px-1.5 gap-y-2 w-[56px] rounded-sm  bg-white  " ></div>
   );
 };
