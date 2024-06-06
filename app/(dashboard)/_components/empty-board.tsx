@@ -15,6 +15,8 @@ const EmptyBoard=() => {
   const {mutate, pending} = useApiMutation(api.boards.create);
  
   console.log(organization?.id);
+  console.log(organization);
+  
 
   
   const addButtonClick = async () => {

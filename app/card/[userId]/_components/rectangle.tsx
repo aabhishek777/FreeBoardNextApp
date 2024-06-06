@@ -1,3 +1,4 @@
+import {rgbToHexColor} from "@/lib/utils";
 import {RectangleLayer} from "@/type/canvas";
 
 interface RectangleProps {
@@ -14,7 +15,10 @@ export const Rectangle = ({
   selectionColor,
 }: RectangleProps) => {
   const {x, y, height, width, fill} = layer;
-
+	
+	
+	console.log(rgbToHexColor(fill));
+	
   return (
     <rect
       className=" drop-shadow-md"
@@ -25,7 +29,7 @@ export const Rectangle = ({
       height={height}
       width={width}
       strokeWidth={1}
-      fill="#000"
+      fill={fill?rgbToHexColor(fill):"#000"}
       stroke="transparent"
     />
   );

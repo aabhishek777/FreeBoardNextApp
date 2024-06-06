@@ -4,6 +4,7 @@ import {api} from "@/convex/_generated/api";
 import {useApiMutation} from "@/hooks/use-api-mutation";
 import {cn} from "@/lib/utils";
 import {useOrganization} from "@clerk/nextjs";
+import {useQuery} from "convex/react";
 import {Plus} from "lucide-react";
 import {useRouter} from "next/navigation";
 import React from "react";
@@ -19,12 +20,15 @@ const AddNewBoardButton = ({disabled, orgId}: AddNewBoardButtonInterface) => {
   const {organization} = useOrganization();
   const {mutate, pending} = useApiMutation(api.boards.create);
 
+  console.log(organization);
+  
   const buttonOnClick = async () => {
     try {
       await mutate({
         title: "undefined",
         orgId,
       });
+      await useQuery()
       toast("Orgnization created success");
       router.push(`/card/${organization?.id}`);
     } catch (error) {
