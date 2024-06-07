@@ -17,8 +17,6 @@ export const SelectionBox = memo(
       me.presence.selection.length === 1 ? me.presence.selection[0] : null
     );
 
-    console.log(currentLayerId);
-
     const isShowHandles = useStorage((root) => {
       return (
         currentLayerId &&
@@ -27,9 +25,6 @@ export const SelectionBox = memo(
     });
 
     const bounds = useSelectionBound();
-
-    console.log(bounds?.x, bounds?.y);
-
     if (!bounds) return null;
 
     return (
@@ -58,7 +53,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Top + Side.Left, bounds);
+              }}
             />
             <rect
               style={{
@@ -72,7 +70,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Top, bounds);
+              }}
             />
             <rect
               style={{
@@ -86,7 +87,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Top + Side.Right, bounds);
+              }}
             />
             <rect
               style={{
@@ -100,7 +104,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Right, bounds);
+              }}
             />
             <rect
               style={{
@@ -114,7 +121,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Bottom + Side.Right, bounds);
+              }}
             />
             <rect
               style={{
@@ -128,7 +138,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Bottom, bounds);
+              }}
             />
             <rect
               style={{
@@ -142,7 +155,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Bottom, bounds);
+              }}
             />
 
             <rect
@@ -157,7 +173,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Bottom + Side.Left, bounds);
+              }}
             />
 
             <rect
@@ -172,7 +191,10 @@ export const SelectionBox = memo(
               className="fill-white stroke-1 stroke-blue-600"
               x={0}
               y={0}
-              onPointerDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                onResizeHandlePointDown(Side.Left, bounds);
+              }}
             />
           </>
         )}

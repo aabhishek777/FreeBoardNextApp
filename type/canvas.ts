@@ -110,7 +110,7 @@ export type CanvasState =
     }
   | {
       mode: CanvasMode.Resizing;
-      intialBound: XYWH;
+      initialBound: XYWH;
       corner: Side;
     }
   | {
