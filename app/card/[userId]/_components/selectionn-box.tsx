@@ -19,21 +19,25 @@ export const SelectionBox = memo(
         root.layers.get(currentLayerId)?.type !== LayerTypes.Path;
     });
 
-    const bounds = useSelectionBound();
+    const bounds=useSelectionBound();
+    
+    console.log(bounds?.x,bounds?.y);
+    
 
     if (!bounds) return null;
 
     return (
       <rect
-        className=" fill-transparent  stroke-blue-600 stroke-1  pointer-events-none"
-        style={{
-          transform: `translate(${bounds.x}px,${bounds.y}px)`,
-        }}
-        x={bounds.x}
-        y={bounds.y}
-        height={bounds.height}
-        width={bounds.width}
-      />
+      className="fill-transparent stroke-blue-600 stroke-2 pointer-events-none"
+      style={{
+        transform: `translate(${bounds.x}px,${bounds.y}px)`,
+      }}
+      x={0}
+      y={0}
+      height={bounds.height}
+      width={bounds.width}
+    />
+    
     );
   }
 );

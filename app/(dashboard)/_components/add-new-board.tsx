@@ -28,7 +28,7 @@ const AddNewBoardButton = ({disabled, orgId}: AddNewBoardButtonInterface) => {
         title: "undefined",
         orgId,
       });
-      await useQuery()
+      // await useQuery()
       toast("Orgnization created success");
       router.push(`/card/${organization?.id}`);
     } catch (error) {

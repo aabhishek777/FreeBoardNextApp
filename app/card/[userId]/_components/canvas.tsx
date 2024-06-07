@@ -138,10 +138,13 @@ const Canvas=({boardId}: CanvasProps) => {
     [camera, inserLayer, canvasState, history]
   );
 
-  const selections = useOthersMapped((other) => other.presence.selection);
+  const selections=useOthersMapped((other) => other.presence.selection);
+  // console.log(selections);
+  
 
   const onLayerPointerDown = useMutation(
-    ({self, setMyPresence}, e: React.PointerEvent, layerId: string) => {
+    ({self,setMyPresence},e: React.PointerEvent,layerId: string) => {
+      e.stopPropagation();
       if (
         canvasState.mode === CanvasMode.Pencil ||
         canvasState.mode === CanvasMode.Inserting
@@ -149,22 +152,24 @@ const Canvas=({boardId}: CanvasProps) => {
         return;
       }
       history.pause();
-      e.stopPropagation();
+      
 
-      const point = pointerEventToCanvasPoint(e, camera);
+      const point=pointerEventToCanvasPoint(e,camera);
+      console.log(point.x,point.y);
+      
 
       if (!self.presence.selection.includes(layerId)) {
         setMyPresence({selection: [layerId]},{addToHistory: true});
-        console.log(layerId);
+        // console.log(layerId);
         
       }
-      console.log(canvasState);
+      // console.log(canvasState+'---------------------------------------');
       
       setCanvasState({
         mode: CanvasMode.Translating,
         origin: point,
       });
-      console.log(canvasState);
+      // console.log(canvasState);
     },
     [canvasState.mode, camera, history, setCanvasState]
   );
@@ -215,8 +220,10 @@ const Canvas=({boardId}: CanvasProps) => {
               onLayerPointerDown={onLayerPointerDown}
               selectionColor="#000"
             />
+            
           ))}
-          <SelectionBox onResizeHandlePointDown={() => {}} />
+           <SelectionBox onResizeHandlePointDown={() => {}} />
+         
           <CursorPresences />
         </g>
       </svg>
