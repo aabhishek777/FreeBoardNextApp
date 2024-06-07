@@ -14,7 +14,7 @@ import {Cursor2} from "./cursor-2";
 const Cursors=() => {
 	const ids=useOthersConnectionIds();
 	
-	console.log(ids);
+	// console.log(ids);
 	
 
 	return (<>
