@@ -54,59 +54,6 @@ const Canvas = ({boardId}: CanvasProps) => {
   const canRedo = useCanRedo();
   const canUndo = useCanUndo();
 
-  const resizeSelectedLayer = useMutation(
-    ({storage, self}, point: Point) => {
-      if (canvasState.mode != CanvasMode.Resizing) {
-        return;
-      }
-
-      const bounds = resizeBounds(
-        canvasState.corner,
-        canvasState.initialBound,
-        point
-      );
-
-      const liveLayers = storage.get("layers");
-      const layer = liveLayers.get(self?.presence?.selection[0]);
-      console.log({layer, liveLayers});
-
-      if (layer) {
-        layer.update(bounds);
-      }
-    },
-    [canvasState]
-  );
-
-  const onPOinterMove = useMutation(
-    ({setMyPresence}, e: React.PointerEvent) => {
-      e.preventDefault();
-      const point = pointerEventToCanvasPoint(e, camera);
-
-      if (canvasState.mode == CanvasMode.Resizing) {
-        console.log("resizing");
-        resizeSelectedLayer(point);
-      }
-
-      //adding cursor to the UI
-      setMyPresence({
-        cursor: point,
-      });
-    },
-    [camera, canvasState, resizeSelectedLayer]
-  );
-
-  const onWheel = useCallback((e: React.WheelEvent) => {
-    setCamera((camera) => ({
-      x: camera.x - e.deltaX,
-      y: camera.y - e.deltaY,
-    }));
-  }, []);
-
-  const onPointerLeave = useMutation(({setMyPresence}) => {
-    setMyPresence({cursor: null});
-    //TODO have to handel the cursor left because it goes to x,y=0 starting of this canvas //
-  }, []);
-
   const inserLayer = useMutation(
     (
       {storage, setMyPresence},
@@ -144,6 +91,104 @@ const Canvas = ({boardId}: CanvasProps) => {
     },
     []
   );
+  const resizeSelectedLayer = useMutation(
+    ({storage, self}, point: Point) => {
+      if (canvasState.mode != CanvasMode.Resizing) {
+        return;
+      }
+
+      const bounds = resizeBounds(
+        canvasState.corner,
+        canvasState.initialBound,
+        point
+      );
+
+      const liveLayers = storage.get("layers");
+      const layer = liveLayers.get(self?.presence?.selection[0]);
+      console.log({layer, liveLayers});
+
+      if (layer) {
+        layer.update(bounds);
+      }
+    },
+    [canvasState]
+  );
+
+  const translatingSelectedLayers = useMutation(
+    ({storage,self},point: Point) => {
+      console.log(point);
+      
+      if (canvasState.mode != CanvasMode.Translating) {
+        return;
+      }
+
+      const offset = {
+        x: point.x - canvasState.origin.x,
+        y: point.y - canvasState.origin.y,
+      };
+
+      console.log({offset});
+      
+      const liveLayers = storage.get("layers");
+
+      for (const id of self.presence.selection) {
+        const layer = liveLayers.get(id);
+
+        console.log({x:layer?.get("x"),y:layer?.get("y")});
+        
+        if (layer) {
+          layer.update({
+            x: layer.get("x") + offset.x,
+            y: layer.get("y") + offset.y,
+          });
+        }
+      }
+
+      setCanvasState({
+        mode: CanvasMode.Translating,
+        origin: point,
+      });
+    },
+    [canvasState]
+  );
+
+  const selections = useOthersMapped((other) => other.presence.selection);
+
+  const onPOinterMove = useMutation(
+    ({setMyPresence}, e: React.PointerEvent) => {
+      e.preventDefault();
+      const point = pointerEventToCanvasPoint(e, camera);
+
+      if (canvasState.mode == CanvasMode.Translating) {
+        console.log("translating");
+        translatingSelectedLayers(point);
+        setCanvasState({
+          mode:CanvasMode.None
+        })
+      } else if (canvasState.mode == CanvasMode.Resizing) {
+        console.log("resizing");
+        resizeSelectedLayer(point);
+      }
+
+      //adding cursor to the UI
+      setMyPresence({
+        cursor: point,
+      });
+    },
+    [camera, canvasState, resizeSelectedLayer,translatingSelectedLayers]
+  );
+
+  const onWheel = useCallback((e: React.WheelEvent) => {
+    setCamera((camera) => ({
+      x: camera.x - e.deltaX,
+      y: camera.y - e.deltaY,
+    }));
+  }, []);
+
+  const onPointerLeave = useMutation(({setMyPresence}) => {
+    setMyPresence({cursor: null});
+    //TODO have to handel the cursor left because it goes to x,y=0 starting of this canvas //
+  }, []);
 
   const onPointerUp = useMutation(
     ({}, e) => {
@@ -160,8 +205,6 @@ const Canvas = ({boardId}: CanvasProps) => {
     },
     [camera, inserLayer, canvasState, history]
   );
-
-  const selections = useOthersMapped((other) => other.presence.selection);
 
   const onLayerPointerDown = useMutation(
     ({self, setMyPresence}, e: React.PointerEvent, layerId: string) => {

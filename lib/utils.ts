@@ -31,23 +31,26 @@ export function resizeBounds(corner: Side, bounds: XYWH, point: Point): XYWH {
   const result = {
     x: bounds.x,
     y: bounds.y,
-    height: 1,
-    width: 2,
+    height: bounds.height,
+    width: bounds.width,
   };
-
-  if ((corner && Side.Left) === Side.Left) {
+//TODO have to fix some issues in resizing//
+  if ((corner&Side.Left)===Side.Left) {
+    console.log('left');
+    
     result.x = Math.min(point.x, bounds.x + bounds.width);
     result.width = Math.abs(bounds.x + bounds.width - point.x);
   }
-  if ((corner && Side.Right) === Side.Right) {
+  if ((corner & Side.Right) === Side.Right) {
     result.x = Math.min(point.x, bounds.x);
-    result.width = Math.abs(-bounds.x + point.x);
+    result.width = Math.abs(point.x-bounds.x );
   }
-  if ((corner && Side.Top) === Side.Top) {
+  if ((corner&Side.Top)===Side.Top) {
+    console.log('top');
     result.y = Math.min(point.y, bounds.y + bounds.height);
     result.height = Math.abs(bounds.y + bounds.height - point.y);
   }
-  if ((corner && Side.Bottom) === Side.Bottom) {
+  if ((corner & Side.Bottom) === Side.Bottom) {
     result.y = Math.min(point.y, bounds.y);
     result.height = Math.abs(point.y - bounds.y);
   }
