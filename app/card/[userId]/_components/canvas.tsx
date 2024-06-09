@@ -1,5 +1,5 @@
 "use client";
-
+//Here is the bug of double clicking to deselect layer in UI
 import React, {useCallback, useMemo, useState} from "react";
 import {Participents} from "./participants";
 import {Toolbar} from "./toolbar";
@@ -114,10 +114,17 @@ const Canvas = ({boardId}: CanvasProps) => {
     [canvasState]
   );
 
+  const unselectLayers = useMutation(({self, setMyPresence}) => {
+    if (self.presence.selection.length > 0) {
+      console.log("unselecting");
+
+      setMyPresence({selection: []}, {addToHistory: true});
+    }
+  }, []);
   const translatingSelectedLayers = useMutation(
-    ({storage,self},point: Point) => {
+    ({storage, self}, point: Point) => {
       console.log(point);
-      
+
       if (canvasState.mode != CanvasMode.Translating) {
         return;
       }
@@ -128,14 +135,14 @@ const Canvas = ({boardId}: CanvasProps) => {
       };
 
       console.log({offset});
-      
+
       const liveLayers = storage.get("layers");
 
       for (const id of self.presence.selection) {
         const layer = liveLayers.get(id);
 
-        console.log({x:layer?.get("x"),y:layer?.get("y")});
-        
+        console.log({x: layer?.get("x"), y: layer?.get("y")});
+
         if (layer) {
           layer.update({
             x: layer.get("x") + offset.x,
@@ -163,8 +170,8 @@ const Canvas = ({boardId}: CanvasProps) => {
         console.log("translating");
         translatingSelectedLayers(point);
         setCanvasState({
-          mode:CanvasMode.None
-        })
+          mode: CanvasMode.None,
+        });
       } else if (canvasState.mode == CanvasMode.Resizing) {
         console.log("resizing");
         resizeSelectedLayer(point);
@@ -175,7 +182,7 @@ const Canvas = ({boardId}: CanvasProps) => {
         cursor: point,
       });
     },
-    [camera, canvasState, resizeSelectedLayer,translatingSelectedLayers]
+    [camera, canvasState, resizeSelectedLayer, translatingSelectedLayers]
   );
 
   const onWheel = useCallback((e: React.WheelEvent) => {
@@ -190,10 +197,40 @@ const Canvas = ({boardId}: CanvasProps) => {
     //TODO have to handel the cursor left because it goes to x,y=0 starting of this canvas //
   }, []);
 
-  const onPointerUp = useMutation(
-    ({}, e) => {
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      e.preventDefault();
+      if (canvasState.mode === CanvasMode.Inserting) {
+        return;
+      }
+
       const point = pointerEventToCanvasPoint(e, camera);
-      if (canvasState.mode == CanvasMode.Inserting) {
+
+      //TODO add case for drawing
+
+      setCanvasState({
+        mode: CanvasMode.Pressing,
+        origin: point,
+      });
+    },
+    [camera, canvasState.mode, setCanvasState]
+  );
+
+  const onPointerUp = useMutation(
+    ({ },e) => {
+      e.preventDefault();
+      const point = pointerEventToCanvasPoint(e, camera);
+
+      if (
+        canvasState.mode === CanvasMode.None ||
+        canvasState.mode === CanvasMode.Pressing
+      ) {
+        console.log("pressing");
+        unselectLayers();
+        setCanvasState({
+          mode: CanvasMode.None,
+        });
+      } else if (canvasState.mode == CanvasMode.Inserting) {
         inserLayer(canvasState.layerType, point);
       } else {
         setCanvasState({
@@ -203,7 +240,7 @@ const Canvas = ({boardId}: CanvasProps) => {
 
       history.resume();
     },
-    [camera, inserLayer, canvasState, history]
+    [camera, inserLayer, canvasState, history,unselectLayers]
   );
 
   const onLayerPointerDown = useMutation(
@@ -279,6 +316,7 @@ const Canvas = ({boardId}: CanvasProps) => {
         onPointerMove={onPOinterMove}
         onPointerLeave={onPointerLeave}
         onPointerUp={onPointerUp}
+        onPointerDown={onPointerDown}
       >
         <g
           style={{
