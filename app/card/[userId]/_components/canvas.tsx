@@ -32,6 +32,7 @@ import {LiveObject} from "@liveblocks/client";
 import {CursorPresences} from "./cursor-presences";
 import {LayerPreview} from "./layer-preview";
 import {SelectionBox} from "./selectionn-box";
+import {SelectTools} from "./select-tools";
 
 interface CanvasProps {
   boardId: string;
@@ -310,6 +311,10 @@ const Canvas = ({boardId}: CanvasProps) => {
         canUndo={canUndo}
       />
 
+      <SelectTools
+        camera={camera}
+        setLastUsedColor={setLastUsedColor}
+      />
       <svg
         className="h-[100vh] w-[100vw]"
         onWheel={onWheel}
