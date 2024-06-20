@@ -14,7 +14,9 @@ export const Rectangle = ({
   onPointerDown,
   selectionColor,
 }: RectangleProps) => {
-  const {x, y, height, width, fill} = layer;
+  const {x,y,height,width,fill}=layer;
+  console.log("hi i am rectangle");
+  
   
   return (
     <rect

@@ -96,6 +96,8 @@ export const Toolbar = ({
             canvasState.layerType == LayerTypes.Ellips
           }
           onClick={() => {
+            console.log("changed to ellips alyer mode");
+            
             setCanvasState({
               mode: CanvasMode.Inserting,
               layerType: LayerTypes.Ellips,

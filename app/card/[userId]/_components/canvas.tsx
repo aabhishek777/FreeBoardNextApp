@@ -96,6 +96,8 @@ const Canvas = ({boardId}: CanvasProps) => {
       setCanvasState({
         mode: CanvasMode.None,
       });
+      console.log('layer inserted successfully' + layerId);
+      
     },
     []
   );
@@ -211,7 +213,8 @@ const Canvas = ({boardId}: CanvasProps) => {
   const onPOinterMove = useMutation(
     ({setMyPresence}, e: React.PointerEvent) => {
       e.preventDefault();
-      const point = pointerEventToCanvasPoint(e, camera);
+      const point=pointerEventToCanvasPoint(e,camera);
+    
 
       if (canvasState.mode == CanvasMode.Pressing) {
         startMultiSelection(point, canvasState.origin);
@@ -249,7 +252,10 @@ const Canvas = ({boardId}: CanvasProps) => {
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
-      if (canvasState.mode === CanvasMode.Inserting) {
+
+      if (canvasState.mode===CanvasMode.Inserting) {
+        console.log("inserting mode pointer down event");
+        
         return;
       }
       else if (canvasState.mode===CanvasMode.SelectionNet) {
@@ -283,7 +289,10 @@ const Canvas = ({boardId}: CanvasProps) => {
         setCanvasState({
           mode: CanvasMode.None,
         });
-      } else if (canvasState.mode == CanvasMode.Inserting) {
+      } else if (canvasState.mode==CanvasMode.Inserting) {
+        
+        console.log("mode is inserting...");
+        
         inserLayer(canvasState.layerType, point);
       } else {
         setCanvasState({
@@ -299,6 +308,7 @@ const Canvas = ({boardId}: CanvasProps) => {
   const onLayerPointerDown = useMutation(
     ({self, setMyPresence}, e: React.PointerEvent, layerId: string) => {
       e.stopPropagation();
+      console.log("hioooooooo");
       
       if (
         canvasState.mode === CanvasMode.Pencil ||
