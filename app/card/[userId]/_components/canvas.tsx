@@ -1,5 +1,5 @@
 "use client";
-//Here is the bug of double clicking to deselect layer in UI
+//TODO Here is the bug of double clicking to deselect layer in UI
 import React, {useCallback, useMemo, useState} from "react";
 import {Participents} from "./participants";
 import {Toolbar} from "./toolbar";
@@ -8,10 +8,9 @@ import {
   useCanUndo,
   useHistory,
   useMutation,
-  useOthersConnectionIds,
   useOthersMapped,
   useStorage,
-} from "@/liveblocks.config";
+  } from "@/liveblocks.config";
 import {Info} from "./info";
 
 import {
@@ -25,7 +24,12 @@ import {
   XYWH,
 } from "@/type/canvas";
 
-import {idToColor, pointerEventToCanvasPoint, resizeBounds} from "@/lib/utils";
+import {
+  findIntersectingLayerWithRectangle,
+  idToColor,
+  pointerEventToCanvasPoint,
+  resizeBounds,
+} from "@/lib/utils";
 
 import {nanoid} from "nanoid";
 import {LiveObject} from "@liveblocks/client";
@@ -38,13 +42,16 @@ interface CanvasProps {
   boardId: string;
 }
 const Canvas = ({boardId}: CanvasProps) => {
-  const MAX_LAYER = 100;
+  const MAX_LAYER=100;
+  
   const layerIds = useStorage((root) => root?.layerIds);
 
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
-  const [camera, setCamera] = useState<Camera>({x: 0, y: 0});
+
+  const [camera,setCamera]=useState<Camera>({x: 0,y: 0});
+  
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
     r: 0,
     g: 0,
@@ -92,6 +99,7 @@ const Canvas = ({boardId}: CanvasProps) => {
     },
     []
   );
+
   const resizeSelectedLayer = useMutation(
     ({storage, self}, point: Point) => {
       if (canvasState.mode != CanvasMode.Resizing) {
@@ -122,6 +130,44 @@ const Canvas = ({boardId}: CanvasProps) => {
       setMyPresence({selection: []}, {addToHistory: true});
     }
   }, []);
+
+  const updateSelectionNet = useMutation(
+    ({storage, setMyPresence}, current: Point, origin: Point) => {
+      const layers = storage.get("layers").toImmutable();
+
+      setCanvasState({
+        mode: CanvasMode.SelectionNet,
+        current,
+        origin,
+      });
+
+      const ids = findIntersectingLayerWithRectangle(
+        layerIds,
+        layers,
+        origin,
+        current
+      );
+      console.log(ids);
+      
+      setMyPresence({selection: ids});
+    },
+    [layerIds]
+  );
+
+  const startMultiSelection = useCallback((current: Point, origin: Point) => {
+    //checking of the gap bw origin and current is more than 5 then we will put it in to selectionNet mode
+
+    if (Math.abs(current.x - origin.x) + Math.abs(current.y - origin.y) > 5) {
+      setCanvasState({
+        mode: CanvasMode.SelectionNet,
+        origin: origin,
+        current: current,
+      });
+    }
+
+    console.log("selection net  ");
+  }, []);
+
   const translatingSelectedLayers = useMutation(
     ({storage, self}, point: Point) => {
       console.log(point);
@@ -167,14 +213,16 @@ const Canvas = ({boardId}: CanvasProps) => {
       e.preventDefault();
       const point = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode == CanvasMode.Translating) {
-        console.log("translating");
+      if (canvasState.mode == CanvasMode.Pressing) {
+        startMultiSelection(point, canvasState.origin);
+      } else if (canvasState.mode == CanvasMode.SelectionNet) {
+        updateSelectionNet(point, canvasState.origin);
+      } else if (canvasState.mode == CanvasMode.Translating) {
         translatingSelectedLayers(point);
         setCanvasState({
           mode: CanvasMode.None,
         });
       } else if (canvasState.mode == CanvasMode.Resizing) {
-        console.log("resizing");
         resizeSelectedLayer(point);
       }
 
@@ -218,7 +266,7 @@ const Canvas = ({boardId}: CanvasProps) => {
   );
 
   const onPointerUp = useMutation(
-    ({ },e) => {
+    ({}, e) => {
       e.preventDefault();
       const point = pointerEventToCanvasPoint(e, camera);
 
@@ -241,7 +289,7 @@ const Canvas = ({boardId}: CanvasProps) => {
 
       history.resume();
     },
-    [camera, inserLayer, canvasState, history,unselectLayers]
+    [camera, inserLayer, canvasState, history, unselectLayers]
   );
 
   const onLayerPointerDown = useMutation(
@@ -311,10 +359,7 @@ const Canvas = ({boardId}: CanvasProps) => {
         canUndo={canUndo}
       />
 
-      <SelectTools
-        camera={camera}
-        setLastUsedColor={setLastUsedColor}
-      />
+      <SelectTools camera={camera} setLastUsedColor={setLastUsedColor} />
       <svg
         className="h-[100vh] w-[100vw]"
         onWheel={onWheel}

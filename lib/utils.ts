@@ -1,4 +1,4 @@
-import {Camera, Color, Point, Side, XYWH} from "@/type/canvas";
+import {Camera, Color, Layers, Point, Side, XYWH} from "@/type/canvas";
 import {type ClassValue, clsx} from "clsx";
 import React from "react";
 import {twMerge} from "tailwind-merge";
@@ -34,19 +34,19 @@ export function resizeBounds(corner: Side, bounds: XYWH, point: Point): XYWH {
     height: bounds.height,
     width: bounds.width,
   };
-//TODO have to fix some issues in resizing//
-  if ((corner&Side.Left)===Side.Left) {
-    console.log('left');
-    
+  //TODO have to fix some issues in resizing//
+  if ((corner & Side.Left) === Side.Left) {
+    console.log("left");
+
     result.x = Math.min(point.x, bounds.x + bounds.width);
     result.width = Math.abs(bounds.x + bounds.width - point.x);
   }
   if ((corner & Side.Right) === Side.Right) {
     result.x = Math.min(point.x, bounds.x);
-    result.width = Math.abs(point.x-bounds.x );
+    result.width = Math.abs(point.x - bounds.x);
   }
-  if ((corner&Side.Top)===Side.Top) {
-    console.log('top');
+  if ((corner & Side.Top) === Side.Top) {
+    console.log("top");
     result.y = Math.min(point.y, bounds.y + bounds.height);
     result.height = Math.abs(bounds.y + bounds.height - point.y);
   }
@@ -56,4 +56,39 @@ export function resizeBounds(corner: Side, bounds: XYWH, point: Point): XYWH {
   }
 
   return result;
+}
+
+export function findIntersectingLayerWithRectangle(
+  layerIds: readonly string[],
+  layers: ReadonlyMap<string, Layers>,
+  a: Point,
+  b: Point
+) {
+  const rect: XYWH = {
+    x: Math.min(a.x, b.x),
+    y: Math.min(a.y, b.y),
+    width: Math.abs(a.x - b.x),
+    height: Math.abs(a.y - b.y),
+  };
+
+  const ids = [];
+
+  for (let layerId of layerIds) {
+    const layer = layers.get(layerId);
+    if (layer == null) {
+      continue;
+    }
+
+    const {x, y, width, height} = layer;
+    if (
+      rect.x + rect.width > x &&
+      rect.x < x + width &&
+      rect.y + rect.height &&
+      rect.y < y + height
+    ) {
+      ids.push(layerId);
+    }
+  }
+
+  return ids;
 }

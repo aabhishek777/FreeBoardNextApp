@@ -15,9 +15,6 @@ export const Rectangle = ({
   selectionColor,
 }: RectangleProps) => {
   const {x, y, height, width, fill} = layer;
-	
-
-  console.log(fill);
   
   return (
     <rect
