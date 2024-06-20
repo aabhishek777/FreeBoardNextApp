@@ -252,6 +252,10 @@ const Canvas = ({boardId}: CanvasProps) => {
       if (canvasState.mode === CanvasMode.Inserting) {
         return;
       }
+      else if (canvasState.mode===CanvasMode.SelectionNet) {
+        console.log("hihihihhiihii");
+        
+      }
 
       const point = pointerEventToCanvasPoint(e, camera);
 
@@ -295,6 +299,7 @@ const Canvas = ({boardId}: CanvasProps) => {
   const onLayerPointerDown = useMutation(
     ({self, setMyPresence}, e: React.PointerEvent, layerId: string) => {
       e.stopPropagation();
+      
       if (
         canvasState.mode === CanvasMode.Pencil ||
         canvasState.mode === CanvasMode.Inserting
@@ -382,6 +387,17 @@ const Canvas = ({boardId}: CanvasProps) => {
             />
           ))}
           <SelectionBox onResizeHandlePointDown={onResizeHandlePointDown} />
+
+          {canvasState.mode===CanvasMode.SelectionNet&&canvasState.current!=null&&
+            <rect
+            className=" fill-blue-500/5  stroke-blue-500 stroke-1 "
+           x={Math.min(canvasState.origin.x, canvasState.current.x)}  
+           y={Math.min(canvasState.origin.y, canvasState.current.y)}  
+           width={Math.abs(canvasState.origin.x- canvasState.current.x)}  
+           height={Math.abs(canvasState.origin.y- canvasState.current.y)}  
+          
+          />
+          }
 
           <CursorPresences />
         </g>

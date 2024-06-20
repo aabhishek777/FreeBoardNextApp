@@ -24,6 +24,9 @@ export const SelectionBox = memo(
       );
     });
 
+    console.log("selection box");
+    
+
     const bounds = useSelectionBound();
     if (!bounds) return null;
 
