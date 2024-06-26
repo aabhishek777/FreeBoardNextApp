@@ -1,10 +1,9 @@
-"use client";
-
-import {useStorage} from "@/liveblocks.config";
-import {LayerTypes} from "@/type/canvas";
-import React, {memo} from "react";
-import {Rectangle} from "./rectangle";
-import {Ellips} from "./ellips";
+import React, { memo } from "react";
+import { useStorage } from "@/liveblocks.config";
+import { LayerTypes } from "@/type/canvas";
+import { Rectangle } from "./rectangle";
+import { Ellips } from "./ellips";
+import { Text } from "./text";
 
 interface LayerPreviewProps {
   id: string;
@@ -13,18 +12,23 @@ interface LayerPreviewProps {
 }
 
 export const LayerPreview = memo(
-  ({id, onLayerPointerDown, selectionColor}: LayerPreviewProps) => {
-    const layer=useStorage((root) => root.layers.get(id));
-    
-    console.log(layer);
-    
+  ({ id, onLayerPointerDown, selectionColor }: LayerPreviewProps) => {
+    const layer = useStorage((root) => root.layers.get(id));
 
     if (!layer) {
       return null;
     }
 
     switch (layer.type) {
-
+      case LayerTypes.Text:
+        return (
+          <Text
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+          />
+        );
       case LayerTypes.Ellips:
         return (
           <Ellips
@@ -33,7 +37,7 @@ export const LayerPreview = memo(
             onPointerDown={onLayerPointerDown}
             selectionColor={selectionColor}
           />
-        )
+        );
       case LayerTypes.Rectangle:
         return (
           <Rectangle
@@ -44,10 +48,8 @@ export const LayerPreview = memo(
           />
         );
 
-      default: {
-        console.log("not layyers present");
+      default:
         return null;
-      }
     }
   }
 );

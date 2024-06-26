@@ -79,7 +79,7 @@ export const SelectTools = memo(
     if (!bounds) return null;
     const x = bounds.width / 2 + bounds.x + camera.x;
     const y = bounds.y + camera.y;
-    console.log({x, y});
+    // console.log({x, y});
 
     return (
       <div
