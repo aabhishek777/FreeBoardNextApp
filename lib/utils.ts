@@ -1,4 +1,13 @@
-import {Camera, Color, Layers, Point, Side, XYWH} from "@/type/canvas";
+import {
+  Camera,
+  Color,
+  LayerTypes,
+  Layers,
+  PathLayer,
+  Point,
+  Side,
+  XYWH,
+} from "@/type/canvas";
 import {type ClassValue, clsx} from "clsx";
 import React from "react";
 import {twMerge} from "tailwind-merge";
@@ -93,4 +102,41 @@ export function findIntersectingLayerWithRectangle(
   return ids;
 }
 
+export function penPointsToPathLayer(
+  points: [number, number, number][],
+  color: Color
+): PathLayer {
+  if (points.length < 2) {
+    throw new Error("Point length cannot be less than 2");
+  }
+  let top = Number.POSITIVE_INFINITY;
+  let bottom = Number.NEGATIVE_INFINITY;
+  let right = Number.NEGATIVE_INFINITY;
+  let left = Number.POSITIVE_INFINITY;
 
+  for (const point of points) {
+    const [x, y] = point;
+
+    if (left > x) {
+      left = x;
+    }
+    if (top > y) {
+      top = y;
+    }
+    if (right < x) {
+      right = x;
+    }
+    if (bottom < y) {
+      bottom = y;
+    }
+  }
+  return {
+    type: LayerTypes.Path,
+    x: left,
+    y: top,
+    width: right - left,
+    height: bottom - top,
+    fill: color,
+    points: points.map(([x, y, pressure]) => [x - left, y - top, pressure]),
+  };
+}

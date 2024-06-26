@@ -27,6 +27,7 @@ import {
 import {
   findIntersectingLayerWithRectangle,
   idToColor,
+  penPointsToPathLayer,
   pointerEventToCanvasPoint,
   resizeBounds,
 } from "@/lib/utils";
@@ -100,7 +101,6 @@ const Canvas = ({boardId}: CanvasProps) => {
       setCanvasState({
         mode: CanvasMode.None,
       });
-      // console.log("layer inserted successfully" + layerId);
     },
     []
   );
@@ -119,8 +119,6 @@ const Canvas = ({boardId}: CanvasProps) => {
 
       const liveLayers = storage.get("layers");
       const layer = liveLayers.get(self?.presence?.selection[0]);
-      // console.log({ layer, liveLayers });
-
       if (layer) {
         layer.update(bounds);
       }
@@ -130,8 +128,6 @@ const Canvas = ({boardId}: CanvasProps) => {
 
   const unselectLayers = useMutation(({self, setMyPresence}) => {
     if (self.presence.selection.length > 0) {
-      // console.log("unselecting");
-
       setMyPresence({selection: []}, {addToHistory: true});
     }
   }, []);
@@ -152,7 +148,6 @@ const Canvas = ({boardId}: CanvasProps) => {
         origin,
         current
       );
-      // console.log(ids);
 
       setMyPresence({selection: ids});
     },
@@ -233,35 +228,42 @@ const Canvas = ({boardId}: CanvasProps) => {
     [canvasState.mode]
   );
 
+  const insertPath = useMutation(
+    ({storage, self, setMyPresence}) => {
+      const {pencilDraft} = self.presence;
 
-  const insertPath=useMutation(({
-    storage,
-    self,
-    setMyPresence,
+      const liveLayers = storage.get("layers");
 
-  }) => {
+      if (
+        pencilDraft === null ||
+        pencilDraft.length < 2 ||
+        liveLayers.size >= MAX_LAYER
+      ) {
+        setMyPresence({pencilDraft: null});
+        return;
+      }
 
-    const {pencilDraft}=self.presence;
+      const id = nanoid();
 
-    const liveLayers=storage.get('layers');
+      liveLayers.set(
+        id,
+        new LiveObject(penPointsToPathLayer(pencilDraft, lastUsedColor))
+      );
 
-    if (pencilDraft===null||
-      pencilDraft.length<2||
-      liveLayers.size>=MAX_LAYER
-    ) {
-      setMyPresence({pencilDraft: null});
-      return;
-    }
+      const liveLayerIds = storage.get("layerIds");
 
-    const id=nanoid();
-    
+      liveLayerIds.push(id);
 
+      setMyPresence({
+        pencilDraft: null,
+      });
 
-
-
-
-   },[]);
-
+      setCanvasState({
+        mode: CanvasMode.Pencil,
+      });
+    },
+    [lastUsedColor]
+  );
 
   const startDrawing = useMutation(
     ({setMyPresence}, point: Point, pressure: number) => {
@@ -369,7 +371,15 @@ const Canvas = ({boardId}: CanvasProps) => {
 
       history.resume();
     },
-    [camera,setCanvasState, insertLayer, canvasState, history, unselectLayers, insertPath]
+    [
+      camera,
+      setCanvasState,
+      insertLayer,
+      canvasState,
+      history,
+      unselectLayers,
+      insertPath,
+    ]
   );
 
   const onLayerPointerDown = useMutation(
