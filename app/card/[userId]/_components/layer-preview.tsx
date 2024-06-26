@@ -4,6 +4,8 @@ import { LayerTypes } from "@/type/canvas";
 import { Rectangle } from "./rectangle";
 import { Ellips } from "./ellips";
 import { Text } from "./text";
+import {Path} from "./path";
+import {rgbToHexColor} from "@/lib/utils";
 
 interface LayerPreviewProps {
   id: string;
@@ -20,6 +22,18 @@ export const LayerPreview = memo(
     }
 
     switch (layer.type) {
+      case LayerTypes.Path:
+        return (
+          <Path
+            x={layer.x}
+            y={layer.y}
+            points ={layer.points}
+            onPointerDown={e => onLayerPointerDown(e,id)}
+            fill={layer.fill? rgbToHexColor(layer.fill):"#000"}
+
+            stroke={selectionColor}
+          />
+        );
       case LayerTypes.Text:
         return (
           <Text
