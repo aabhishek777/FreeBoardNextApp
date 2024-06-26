@@ -1,8 +1,8 @@
 "use client";
 //TODO Here is the bug of double clicking to deselect layer in UI
-import React, { useCallback, useMemo, useState } from "react";
-import { Participents } from "./participants";
-import { Toolbar } from "./toolbar";
+import React, {useCallback, useMemo, useState} from "react";
+import {Participents} from "./participants";
+import {Toolbar} from "./toolbar";
 import {
   useCanRedo,
   useCanUndo,
@@ -11,7 +11,7 @@ import {
   useOthersMapped,
   useStorage,
 } from "@/liveblocks.config";
-import { Info } from "./info";
+import {Info} from "./info";
 
 import {
   Camera,
@@ -31,18 +31,18 @@ import {
   resizeBounds,
 } from "@/lib/utils";
 
-import { nanoid } from "nanoid";
-import { LiveObject } from "@liveblocks/client";
-import { CursorPresences } from "./cursor-presences";
-import { LayerPreview } from "./layer-preview";
-import { SelectionBox } from "./selectionn-box";
-import { SelectTools } from "./select-tools";
+import {nanoid} from "nanoid";
+import {LiveObject} from "@liveblocks/client";
+import {CursorPresences} from "./cursor-presences";
+import {LayerPreview} from "./layer-preview";
+import {SelectionBox} from "./selectionn-box";
+import {SelectTools} from "./select-tools";
 
 interface CanvasProps {
   boardId: string;
 }
 
-const Canvas = ({ boardId }: CanvasProps) => {
+const Canvas = ({boardId}: CanvasProps) => {
   const MAX_LAYER = 100;
 
   const layerIds = useStorage((root) => root?.layerIds);
@@ -51,7 +51,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
     mode: CanvasMode.None,
   });
 
-  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+  const [camera, setCamera] = useState<Camera>({x: 0, y: 0});
 
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
     r: 0,
@@ -59,8 +59,8 @@ const Canvas = ({ boardId }: CanvasProps) => {
     b: 0,
   });
 
-  const [doubleClickPoint,setDoubleClickPoint]=useState<Point|null>(null);
-  const [visibleRect,setVisibleRect]=useState(0);
+  const [doubleClickPoint, setDoubleClickPoint] = useState<Point | null>(null);
+  const [visibleRect, setVisibleRect] = useState(0);
 
   const history = useHistory();
   const canRedo = useCanRedo();
@@ -68,7 +68,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
 
   const insertLayer = useMutation(
     (
-      { storage, setMyPresence },
+      {storage, setMyPresence},
       layerType:
         | LayerTypes.Ellips
         | LayerTypes.Rectangle
@@ -96,7 +96,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
       liveLayerIds.push(layerId);
       liveLayers.set(layerId, layer);
 
-      setMyPresence({ selection: [layerId] }, { addToHistory: true });
+      setMyPresence({selection: [layerId]}, {addToHistory: true});
       setCanvasState({
         mode: CanvasMode.None,
       });
@@ -106,7 +106,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
   );
 
   const resizeSelectedLayer = useMutation(
-    ({ storage, self }, point: Point) => {
+    ({storage, self}, point: Point) => {
       if (canvasState.mode !== CanvasMode.Resizing) {
         return;
       }
@@ -128,16 +128,16 @@ const Canvas = ({ boardId }: CanvasProps) => {
     [canvasState]
   );
 
-  const unselectLayers = useMutation(({ self, setMyPresence }) => {
+  const unselectLayers = useMutation(({self, setMyPresence}) => {
     if (self.presence.selection.length > 0) {
       // console.log("unselecting");
 
-      setMyPresence({ selection: [] }, { addToHistory: true });
+      setMyPresence({selection: []}, {addToHistory: true});
     }
   }, []);
 
   const updateSelectionNet = useMutation(
-    ({ storage, setMyPresence }, current: Point, origin: Point) => {
+    ({storage, setMyPresence}, current: Point, origin: Point) => {
       const layers = storage.get("layers").toImmutable();
 
       setCanvasState({
@@ -154,7 +154,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
       );
       // console.log(ids);
 
-      setMyPresence({ selection: ids });
+      setMyPresence({selection: ids});
     },
     [layerIds]
   );
@@ -170,7 +170,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
   }, []);
 
   const translatingSelectedLayers = useMutation(
-    ({ storage, self }, point: Point) => {
+    ({storage, self}, point: Point) => {
       // console.log(point);
 
       if (canvasState.mode !== CanvasMode.Translating) {
@@ -207,10 +207,76 @@ const Canvas = ({ boardId }: CanvasProps) => {
     [canvasState]
   );
 
+  const continueDrawing = useMutation(
+    ({self, setMyPresence}, point: Point, e: React.PointerEvent) => {
+      const {pencilDraft} = self.presence;
+
+      if (
+        canvasState.mode !== CanvasMode.Pencil ||
+        e.buttons != 1 ||
+        pencilDraft == null
+      ) {
+        return;
+      }
+
+      setMyPresence({
+        cursor: point,
+
+        pencilDraft:
+          pencilDraft.length === 1 &&
+          pencilDraft[0][0] === point.x &&
+          pencilDraft[0][1] === point.y
+            ? pencilDraft
+            : [...pencilDraft, [point.x, point.y, e.pressure]],
+      });
+    },
+    [canvasState.mode]
+  );
+
+
+  const insertPath=useMutation(({
+    storage,
+    self,
+    setMyPresence,
+
+  }) => {
+
+    const {pencilDraft}=self.presence;
+
+    const liveLayers=storage.get('layers');
+
+    if (pencilDraft===null||
+      pencilDraft.length<2||
+      liveLayers.size>=MAX_LAYER
+    ) {
+      setMyPresence({pencilDraft: null});
+      return;
+    }
+
+    const id=nanoid();
+    
+
+
+
+
+
+   },[]);
+
+
+  const startDrawing = useMutation(
+    ({setMyPresence}, point: Point, pressure: number) => {
+      setMyPresence({
+        pencilDraft: [[point.x, point.y, pressure]],
+        penColor: lastUsedColor,
+      });
+    },
+    [lastUsedColor]
+  );
+
   const selections = useOthersMapped((other) => other.presence.selection);
 
   const onPointerMove = useMutation(
-    ({ setMyPresence }, e: React.PointerEvent) => {
+    ({setMyPresence}, e: React.PointerEvent) => {
       const point = pointerEventToCanvasPoint(e, camera);
 
       if (canvasState.mode === CanvasMode.Pressing) {
@@ -224,13 +290,23 @@ const Canvas = ({ boardId }: CanvasProps) => {
         });
       } else if (canvasState.mode === CanvasMode.Resizing) {
         resizeSelectedLayer(point);
+      } else if (canvasState.mode === CanvasMode.Pencil) {
+        continueDrawing(point, e);
       }
 
       setMyPresence({
         cursor: point,
       });
     },
-    [camera, canvasState, resizeSelectedLayer, translatingSelectedLayers]
+    [
+      camera,
+      canvasState,
+      startMultiSelection,
+      updateSelectionNet,
+      resizeSelectedLayer,
+      translatingSelectedLayers,
+      continueDrawing,
+    ]
   );
 
   const onWheel = useCallback((e: React.WheelEvent) => {
@@ -240,46 +316,35 @@ const Canvas = ({ boardId }: CanvasProps) => {
     }));
   }, []);
 
-  const onPointerLeave = useMutation(({ setMyPresence }) => {
-    setMyPresence({ cursor: null });
-    // console.log("from pointer leave event");
-
-    // console.log(canvasState.mode);
-    
+  const onPointerLeave = useMutation(({setMyPresence}) => {
+    setMyPresence({cursor: null});
     if (canvasState.mode === CanvasMode.SelectionNet) {
-      // console.log("called none state");
-
       setCanvasState({
         mode: CanvasMode.None,
       });
-
-      // console.log(canvasState.mode);
-      
     }
-
   }, []);
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
-      // console.log("from pointer down event");
+      const point = pointerEventToCanvasPoint(e, camera);
 
       if (canvasState.mode === CanvasMode.Inserting) {
-        // console.log("inserting mode pointer down event");
         return;
       } else if (canvasState.mode === CanvasMode.SelectionNet) {
-        // console.log("selection net in pointer down");
+        return;
+      } else if (canvasState.mode === CanvasMode.Pencil) {
+        startDrawing(point, e.pressure);
         return;
       }
 
-      const point = pointerEventToCanvasPoint(e, camera);
-      
       setCanvasState({
         mode: CanvasMode.Pressing,
         origin: point,
       });
     },
-    [camera, canvasState.mode, setCanvasState]
+    [camera, canvasState.mode, setCanvasState, startDrawing]
   );
 
   const onPointerUp = useMutation(
@@ -291,12 +356,11 @@ const Canvas = ({ boardId }: CanvasProps) => {
         setCanvasState({
           mode: CanvasMode.None,
         });
+      } else if (canvasState.mode === CanvasMode.Pencil) {
+        insertPath();
       } else if (canvasState.mode === CanvasMode.Inserting) {
-        // console.log("mode is inserting...");
-
         insertLayer(canvasState.layerType, point);
       } else if (canvasState.mode !== CanvasMode.SelectionNet) {
-        // console.log("hello selection net");
       } else {
         setCanvasState({
           mode: CanvasMode.None,
@@ -305,16 +369,15 @@ const Canvas = ({ boardId }: CanvasProps) => {
 
       history.resume();
     },
-    [camera, insertLayer, canvasState, history, unselectLayers]
+    [camera,setCanvasState, insertLayer, canvasState, history, unselectLayers, insertPath]
   );
 
   const onLayerPointerDown = useMutation(
-    ({ self, setMyPresence }, e: React.PointerEvent, layerId: string) => {
-
+    ({self, setMyPresence}, e: React.PointerEvent, layerId: string) => {
       if (
         canvasState.mode === CanvasMode.Pencil ||
-        canvasState.mode===CanvasMode.Inserting||
-        canvasState.mode==CanvasMode.SelectionNet
+        canvasState.mode === CanvasMode.Inserting ||
+        canvasState.mode == CanvasMode.SelectionNet
       ) {
         return;
       }
@@ -323,7 +386,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
       console.log(point.x, point.y);
 
       if (!self.presence.selection.includes(layerId)) {
-        setMyPresence({ selection: [layerId] }, { addToHistory: true });
+        setMyPresence({selection: [layerId]}, {addToHistory: true});
       }
 
       setCanvasState({
@@ -350,15 +413,12 @@ const Canvas = ({ boardId }: CanvasProps) => {
   );
 
   const onDoubleClick = useCallback(
-    (e:any) => {
+    (e: any) => {
       // e.preventDefault();
       // console.log("from double click event");
       // console.log(e);
-      
       // const point = pointerEventToCanvasPoint(e, camera);
-
       // setDoubleClickPoint(point);
-
       // setCanvasState({
       //   mode: CanvasMode.SelectionNet,
       //   origin: point,
@@ -368,10 +428,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
     [camera]
   );
 
-
-  const onDoubleClickk=useCallback((e:React.MouseEvent) => {
-    
-  },[camera])
+  const onDoubleClickk = useCallback((e: React.MouseEvent) => {}, [camera]);
   const layerIdsToColorSelection = useMemo(() => {
     const layerIdsToColorSelection: Record<string, string> = {};
 

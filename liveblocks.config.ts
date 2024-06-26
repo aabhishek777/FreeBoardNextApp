@@ -1,6 +1,6 @@
 import { LiveList, LiveMap, LiveObject, createClient } from "@liveblocks/client";
 import { createRoomContext, createLiveblocksContext } from "@liveblocks/react";
-import {Layers} from "./type/canvas";
+import {Color, Layers} from "./type/canvas";
   
 const client = createClient({
  
@@ -53,8 +53,9 @@ const client = createClient({
 // `user.presence` property. Must be JSON-serializable.
 type Presence = {
   cursor: {x: number,y: number}|null,
-  selection:string[],
-  // ...
+  selection: string[],
+  pencilDraft: [x: number,y: number,pressure: number][]|null,
+  penColor: Color| null,
 };
 
 // Optionally, Storage represents the shared document that persists in the

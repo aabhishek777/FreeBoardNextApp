@@ -19,7 +19,9 @@ const LiveblocksRoom = ({children, roomId, fallback}: LiveblocksRoomProps) => {
       id={roomId}
       initialPresence={{
         cursor: null,
-        selection:[]
+        selection: [],
+        pencilDraft: null,
+        penColor:null,
 
       }}
       initialStorage={{
