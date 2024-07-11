@@ -9,6 +9,7 @@ import {
   useHistory,
   useMutation,
   useOthersMapped,
+  useSelf,
   useStorage,
 } from "@/liveblocks.config";
 import {Info} from "./info";
@@ -30,6 +31,7 @@ import {
   penPointsToPathLayer,
   pointerEventToCanvasPoint,
   resizeBounds,
+  rgbToHexColor,
 } from "@/lib/utils";
 
 import {nanoid} from "nanoid";
@@ -38,6 +40,7 @@ import {CursorPresences} from "./cursor-presences";
 import {LayerPreview} from "./layer-preview";
 import {SelectionBox} from "./selectionn-box";
 import {SelectTools} from "./select-tools";
+import {Path} from "./path";
 
 interface CanvasProps {
   boardId: string;
@@ -46,7 +49,10 @@ interface CanvasProps {
 const Canvas = ({boardId}: CanvasProps) => {
   const MAX_LAYER = 100;
 
-  const layerIds = useStorage((root) => root?.layerIds);
+  const layerIds=useStorage((root) => root?.layerIds);
+  
+  // const pencilDraft=useSelf(me => me.presence.pencilDraft);
+
 
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
@@ -502,7 +508,17 @@ const Canvas = ({boardId}: CanvasProps) => {
               />
             )}
 
+          
           <CursorPresences />
+          {/* {pencilDraft!=null&&pencilDraft.length>0&&(
+            <Path
+            
+              points={pencilDraft}
+              fill={rgbToHexColor(lastUsedColor)}
+              x={0}
+            y={0}
+            />
+          )} */}
         </g>
       </svg>
     </main>
