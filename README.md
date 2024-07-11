@@ -1,5 +1,5 @@
-*****************************************PLEASE DO CHECK WITH THE PRODUCTION WEBSITE*********************************
-   LINEK https://boardy-omega.vercel.app
+                       **PLEASE DO CHECK WITH THE PRODUCTION  WEBSITE ***
+                         LINK     https://boardy-omega.vercel.app
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
