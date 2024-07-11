@@ -1,6 +1,6 @@
-                       **PLEASE DO CHECK WITH THE PRODUCTION  WEBSITE ***
-                         LINK     https://boardy-omega.vercel.app
-
+********************************************PLEASE DO CHECK WITH THE PRODUCTION  WEBSITE **********************************************
+                         LINK (https://boardy-omega.vercel.app)
+https://github.com/aabhishek777/FreeBoardNextApp/edit/main/README.md
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
