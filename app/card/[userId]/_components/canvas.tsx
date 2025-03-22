@@ -152,7 +152,7 @@ const Canvas = ({boardId}: CanvasProps) => {
         layerIds,
         layers,
         origin,
-        current
+        current,
       );
 
       setMyPresence({selection: ids});
